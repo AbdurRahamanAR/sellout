@@ -17,7 +17,6 @@ module.exports = {
           messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
           appId: process.env.FIREBASE_APP_ID,
         },
-        loginPath: "/login",
         loginRedirectPath: "/",
         socialLogins: ["google", "facebook"],
       },
@@ -27,6 +26,17 @@ module.exports = {
       options: {
         pathToCreateStoreModule: './src/store/createStore',
       },
+    },
+    {
+      resolve: `gatsby-plugin-modal-routing`,
+      options: {
+        appElement: '#___gatsby',
+        modalProps: { 
+          style: {
+            width: 400,
+          }
+        },
+      }
     }
   ],
 };
