@@ -113,9 +113,7 @@ const Auth = () => {
                   <TextField className={classes.formChild} label="Password" variant="outlined" type="password" />
                   <AuthProvs className={classes.formChild}>
                     <Button className={classes.authBut} variant="contained">
-                      <Icon 
-                        path={mdiGoogle}
-                      />
+                      <Icon path={mdiGoogle} size={1}/>
                       Google
                     </Button>
                     <Button className={classes.authBut} variant="contained">
@@ -135,9 +133,7 @@ const Auth = () => {
                   <TextField className={classes.formChild} label="Confirm Password" variant="outlined" type="password" veriant="outlined" />
                   <AuthProvs className={classes.formChild}>
                     <Button className={classes.authBut} variant="contained">
-                      <Icon 
-                        path={mdiGoogle}
-                      />
+                      <Icon  path={ mdiGoogle } size={1}/>
                       Google
                     </Button>
                     <Button className={classes.authBut} variant="contained">
