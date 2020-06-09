@@ -1,6 +1,6 @@
 require("dotenv").config({
   path: `.env`,
-})
+});
 
 module.exports = {
   plugins: [
@@ -20,23 +20,6 @@ module.exports = {
         loginRedirectPath: "/",
         socialLogins: ["google", "facebook"],
       },
-    },
-    {
-      resolve: `gatsby-plugin-react-redux`,
-      options: {
-        pathToCreateStoreModule: './src/store/createStore',
-      },
-    },
-    {
-      resolve: `gatsby-plugin-modal-routing`,
-      options: {
-        appElement: '#___gatsby',
-        modalProps: { 
-          style: {
-            width: 400,
-          }
-        },
-      }
     }
   ],
 };

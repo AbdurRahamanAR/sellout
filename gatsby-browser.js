@@ -1,1 +1,1 @@
-import './src/styles/modelPage.css';
+

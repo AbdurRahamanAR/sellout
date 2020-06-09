@@ -1,10 +1,15 @@
-import React from 'react';
-import { Link } from 'gatsby';
+import React from "react";
+import Layout from "../components/Layout";
+import { useAuth } from "gatsby-theme-firebase";
 
-export default ()=> {
+export default () => {
+  const { isLoading, isLoggedIn, profile } = useAuth();
+
   return (
-    <div>
-      <Link to="/auth">Login</Link>
-    </div>
-  )
-}
+    <Layout>
+      {isLoggedIn && (
+        <pre style={{ marginTop: 300 }}>{JSON.stringify(profile)}</pre>
+      )}
+    </Layout>
+  );
+};
