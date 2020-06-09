@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { Link } from "gatsby";
 // import { ModalRoutingContext } from "gatsby-plugin-modal-routing";
 import styled from "styled-components";
@@ -17,9 +17,9 @@ import { makeStyles } from "@material-ui/styles";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import Icon from "@mdi/react";
 import { mdiGoogle } from "@mdi/js";
-import { auth, firebase } from "gatsby-theme-firebase";
+import { auth, firebase, useAuth } from "gatsby-theme-firebase";
+import { navigate } from "gatsby";
 import { useFormik } from "formik";
-import { redirectTo } from "@reach/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,6 +87,14 @@ const Auth = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const { isLoading, isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn]);
+
   const formikLogin = useFormik({
     initialValues: {
       email: "",
@@ -98,6 +106,7 @@ const Auth = () => {
         .signInWithEmailAndPassword(values.email, values.password)
         .then((data) => {
           setLoading(false);
+          navigate("/");
           formikLogin.resetForm();
         })
         .catch((err) => {
@@ -120,6 +129,7 @@ const Auth = () => {
         .then((data) => {
           setLoading(false);
           formikSignUp.resetForm();
+          navigate("/");
         })
         .catch((err) => {
           setLoading(false);
@@ -136,202 +146,215 @@ const Auth = () => {
     setTabIndex(index);
   };
 
+  if (isLoading) {
+    return "Loading...";
+  }
+
   return (
     <div className={classes.root}>
-      <div className={classes.content}>
-        <Tabs
-          className={classes.tabs}
-          value={tabIndex}
-          aria-label="simple tabs example"
-          onChange={handelTab}
-          centered
-        >
-          <Tab label="Login" />
-          <Tab label="SignUp" />
-        </Tabs>
+        <div className={classes.content}>
+          <Tabs
+            className={classes.tabs}
+            value={tabIndex}
+            aria-label="simple tabs example"
+            onChange={handelTab}
+            centered
+          >
+            <Tab label="Login" />
+            <Tab label="SignUp" />
+          </Tabs>
 
-        <SwipeableViews
-          axis={"x"}
-          index={tabIndex}
-          onChangeIndex={handleChangeIndex}
-        >
-          <TabPanel value={tabIndex} index={0}>
-            <form className={classes.form} onSubmit={formikLogin.handleSubmit}>
-              <TextField
-                className={classes.formChild}
-                label="Email"
-                name="email"
-                onChange={formikLogin.handleChange}
-                value={formikLogin.values.email}
-                variant="outlined"
-                type="text"
-                veriant="outlined"
-              />
-              <TextField
-                className={classes.formChild}
-                name="password"
-                onChange={formikLogin.handleChange}
-                value={formikLogin.values.password}
-                label="Password"
-                variant="outlined"
-                type="password"
-              />
-
-              <Button
-                className={classes.formChild}
-                variant="contained"
-                type="submit"
-                loading
-                disabled={loading}
-                style={{
-                  position: "relative",
-                }}
+          <SwipeableViews
+            axis={"x"}
+            index={tabIndex}
+            onChangeIndex={handleChangeIndex}
+          >
+            <TabPanel value={tabIndex} index={0}>
+              <form
+                className={classes.form}
+                onSubmit={formikLogin.handleSubmit}
               >
-                {loading && (
-                  <div style={{ position: "absolute", left: "30%" }}>
-                    <CircularProgress size={15} style={{ zIndex: 1000 }} />
-                  </div>
-                )}
-                Log In
-              </Button>
+                <TextField
+                  className={classes.formChild}
+                  label="Email"
+                  name="email"
+                  onChange={formikLogin.handleChange}
+                  value={formikLogin.values.email}
+                  variant="outlined"
+                  type="text"
+                  veriant="outlined"
+                />
+                <TextField
+                  className={classes.formChild}
+                  name="password"
+                  onChange={formikLogin.handleChange}
+                  value={formikLogin.values.password}
+                  label="Password"
+                  variant="outlined"
+                  type="password"
+                />
 
-              <AuthProvs className={classes.formChild}>
                 <Button
-                  className={classes.authBut}
+                  className={classes.formChild}
                   variant="contained"
-                  onClick={async () => {
-                    var provider = new firebase.auth.GoogleAuthProvider();
-                    provider.addScope(
-                      "https://www.googleapis.com/auth/contacts.readonly"
-                    );
-                    firebase.auth().languageCode = "en";
-
-                    try {
-                      const user = await auth.signInWithPopup(provider);
-                      console.log(user);
-                    } catch (err) {
-                      console.error("Authentication Error: ", err);
-                    }
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    position: "relative",
                   }}
                 >
-                  <Icon path={mdiGoogle} size={1} />
-                  Google
+                  {loading && (
+                    <div style={{ position: "absolute", left: "30%" }}>
+                      <CircularProgress size={15} style={{ zIndex: 1000 }} />
+                    </div>
+                  )}
+                  Log In
                 </Button>
-                <Button
-                  className={classes.authBut}
-                  variant="contained"
-                  onClick={async () => {
-                    var provider = new firebase.auth.FacebookAuthProvider();
-                    provider.addScope("user_birthday");
-                    firebase.auth().languageCode = "en";
-                    try {
-                      const user = await auth.signInWithPopup(provider);
-                      console.log(user);
-                    } catch (err) {
-                      console.error("Authentication Error: ", err);
-                    }
-                  }}
-                >
-                  <FacebookIcon />
-                  Facebook
-                </Button>
-              </AuthProvs>
-            </form>
-          </TabPanel>
 
-          <TabPanel value={tabIndex} index={1}>
-            <form className={classes.form} onSubmit={formikSignUp.handleSubmit}>
-              <TextField
-                className={classes.formChild}
-                label="Email"
-                name="email"
-                onChange={formikSignUp.handleChange}
-                value={formikSignUp.values.email}
-                variant="outlined"
-                type="text"
-                veriant="outlined"
-              />
-              <TextField
-                className={classes.formChild}
-                label="Password"
-                name="password"
-                onChange={formikSignUp.handleChange}
-                value={formikSignUp.values.password}
-                variant="outlined"
-                type="password"
-              />
-              <TextField
-                className={classes.formChild}
-                label="Confirm Password"
-                name="confirmPass"
-                onChange={formikSignUp.handleChange}
-                value={formikSignUp.values.confirmPass}
-                variant="outlined"
-                type="password"
-                veriant="outlined"
-              />
+                <AuthProvs className={classes.formChild}>
+                  <Button
+                    className={classes.authBut}
+                    variant="contained"
+                    onClick={async () => {
+                      var provider = new firebase.auth.GoogleAuthProvider();
+                      provider.addScope(
+                        "https://www.googleapis.com/auth/contacts.readonly"
+                      );
+                      firebase.auth().languageCode = "en";
 
-              <Button
-                className={classes.formChild}
-                variant="contained"
-                type="submit"
-                style={{
-                  position: "relative",
-                }}
+                      try {
+                        const user = await auth.signInWithPopup(provider);
+                        navigate("/");
+                        console.log(user);
+                      } catch (err) {
+                        console.error("Authentication Error: ", err);
+                      }
+                    }}
+                  >
+                    <Icon path={mdiGoogle} size={1} />
+                    Google
+                  </Button>
+                  <Button
+                    className={classes.authBut}
+                    variant="contained"
+                    onClick={async () => {
+                      var provider = new firebase.auth.FacebookAuthProvider();
+                      provider.addScope("user_birthday");
+                      firebase.auth().languageCode = "en";
+                      try {
+                        const user = await auth.signInWithPopup(provider);
+                        navigate("/");
+                        console.log(user);
+                      } catch (err) {
+                        console.error("Authentication Error: ", err);
+                      }
+                    }}
+                  >
+                    <FacebookIcon />
+                    Facebook
+                  </Button>
+                </AuthProvs>
+              </form>
+            </TabPanel>
+
+            <TabPanel value={tabIndex} index={1}>
+              <form
+                className={classes.form}
+                onSubmit={formikSignUp.handleSubmit}
               >
-                {loading && (
-                  <div style={{ position: "absolute", left: "30%" }}>
-                    <CircularProgress size={15} style={{ zIndex: 1000 }} />
-                  </div>
-                )}
-                SignUp
-              </Button>
+                <TextField
+                  className={classes.formChild}
+                  label="Email"
+                  name="email"
+                  onChange={formikSignUp.handleChange}
+                  value={formikSignUp.values.email}
+                  variant="outlined"
+                  type="text"
+                  veriant="outlined"
+                />
+                <TextField
+                  className={classes.formChild}
+                  label="Password"
+                  name="password"
+                  onChange={formikSignUp.handleChange}
+                  value={formikSignUp.values.password}
+                  variant="outlined"
+                  type="password"
+                />
+                <TextField
+                  className={classes.formChild}
+                  label="Confirm Password"
+                  name="confirmPass"
+                  onChange={formikSignUp.handleChange}
+                  value={formikSignUp.values.confirmPass}
+                  variant="outlined"
+                  type="password"
+                  veriant="outlined"
+                />
 
-              <AuthProvs className={classes.formChild}>
                 <Button
-                  className={classes.authBut}
+                  className={classes.formChild}
                   variant="contained"
-                  onClick={async () => {
-                    var provider = new firebase.auth.GoogleAuthProvider();
-                    provider.addScope(
-                      "https://www.googleapis.com/auth/contacts.readonly"
-                    );
-                    firebase.auth().languageCode = "en";
-
-                    try {
-                      const user = await auth.signInWithPopup(provider);
-                      console.log(user);
-                    } catch (err) {
-                      console.error("Authentication Error: ", err);
-                    }
+                  type="submit"
+                  style={{
+                    position: "relative",
                   }}
                 >
-                  <Icon path={mdiGoogle} size={1} />
-                  Google
+                  {loading && (
+                    <div style={{ position: "absolute", left: "30%" }}>
+                      <CircularProgress size={15} style={{ zIndex: 1000 }} />
+                    </div>
+                  )}
+                  SignUp
                 </Button>
-                <Button
-                  className={classes.authBut}
-                  variant="contained"
-                  onClick={async () => {
-                    var provider = new firebase.auth.FacebookAuthProvider();
-                    provider.addScope("user_birthday");
-                    firebase.auth().languageCode = "en";
-                    try {
-                      const user = await auth.signInWithPopup(provider);
-                      console.log(user);
-                    } catch (err) {
-                      console.error("Authentication Error: ", err);
-                    }
-                  }}
-                >
-                  <FacebookIcon />
-                  Facebook
-                </Button>
-              </AuthProvs>
-            </form>
-          </TabPanel>
-        </SwipeableViews>
-      </div>
+
+                <AuthProvs className={classes.formChild}>
+                  <Button
+                    className={classes.authBut}
+                    variant="contained"
+                    onClick={async () => {
+                      var provider = new firebase.auth.GoogleAuthProvider();
+                      provider.addScope(
+                        "https://www.googleapis.com/auth/contacts.readonly"
+                      );
+                      firebase.auth().languageCode = "en";
+
+                      try {
+                        const user = await auth.signInWithPopup(provider);
+                        navigate("/");
+                        console.log(user);
+                      } catch (err) {
+                        console.error("Authentication Error: ", err);
+                      }
+                    }}
+                  >
+                    <Icon path={mdiGoogle} size={1} />
+                    Google
+                  </Button>
+                  <Button
+                    className={classes.authBut}
+                    variant="contained"
+                    onClick={async () => {
+                      var provider = new firebase.auth.FacebookAuthProvider();
+                      provider.addScope("user_birthday");
+                      firebase.auth().languageCode = "en";
+                      try {
+                        const user = await auth.signInWithPopup(provider);
+                        navigate("/");
+                        console.log(user);
+                      } catch (err) {
+                        console.error("Authentication Error: ", err);
+                      }
+                    }}
+                  >
+                    <FacebookIcon />
+                    Facebook
+                  </Button>
+                </AuthProvs>
+              </form>
+            </TabPanel>
+          </SwipeableViews>
+        </div>
     </div>
   );
 };
