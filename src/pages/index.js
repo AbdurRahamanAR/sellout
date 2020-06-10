@@ -8,7 +8,7 @@ export default () => {
   return (
     <Layout>
       {isLoggedIn && (
-        <pre style={{ marginTop: 300 }}>{JSON.stringify(profile)}</pre>
+        <pre style={{ marginTop: 300 }}>{JSON.stringify(profile, null, 2)}</pre>
       )}
     </Layout>
   );

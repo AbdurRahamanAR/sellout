@@ -128,8 +128,8 @@ const Auth = () => {
         .createUserWithEmailAndPassword(values.email, values.password)
         .then((data) => {
           setLoading(false);
-          formikSignUp.resetForm();
           navigate("/");
+          formikSignUp.resetForm();
         })
         .catch((err) => {
           setLoading(false);
@@ -152,7 +152,6 @@ const Auth = () => {
 
   return (
     <div className={classes.root}>
-      <div>Login error</div>
       <div className={classes.content}>
         <Tabs
           className={classes.tabs}
