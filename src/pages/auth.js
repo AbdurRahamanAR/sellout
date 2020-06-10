@@ -18,7 +18,7 @@ import FacebookIcon from "@material-ui/icons/Facebook";
 import Icon from "@mdi/react";
 import { mdiGoogle } from "@mdi/js";
 import { auth, firebase, useAuth } from "gatsby-theme-firebase";
-import { navigate } from "gatsby";
+import { navigate, Link } from "gatsby";
 import { useFormik } from "formik";
 
 const useStyles = makeStyles((theme) => ({
@@ -254,6 +254,8 @@ const Auth = () => {
                     Facebook
                   </Button>
                 </AuthProvs>
+
+                <Link style={{marginTop: 20, cursor: "pointer"}} to="auth/forgetPass">Forget password?</Link>
               </form>
             </TabPanel>
 
