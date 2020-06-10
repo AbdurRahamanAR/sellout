@@ -52,37 +52,17 @@ const Auth = () => {
     }
   }, [isLoggedIn]);
 
-  const formikLogin = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    onSubmit: (values) => {
-      setLoading(true);
-      auth
-        .signInWithEmailAndPassword(values.email, values.password)
-        .then((data) => {
-          setLoading(false);
-          navigate("/");
-          formikLogin.resetForm();
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    },
-  });
-
   const formik = useFormik({
     initialValues: {
       email: "",
     },
     onSubmit: (values) => {
       setLoading(true);
-      auth.sendPasswordResetEmail(values.email).then(function() {
+      auth.sendPasswordResetEmail(values.email).then(function () {
         setLoading(false);
         formik.resetForm();
-      }).catch(function(error) {
+        navigate("/auth");
+      }).catch(function (error) {
         setLoading(false);
         console.log(error);
       });

@@ -6,7 +6,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "develop": "gatsby develop"
+    "start": "npm run develop",
+    "develop": "gatsby develop",
+    "build": "gatsby build"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.9",
