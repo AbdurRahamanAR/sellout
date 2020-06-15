@@ -3,13 +3,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   List,
   ListItemSecondaryAction,
-  Fab,
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
   Typography,
-  Divider,
   CircularProgress,
 } from "@material-ui/core";
 import Layout from "../components/Layout";
@@ -20,7 +18,7 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import AddProduct from "./productAdmin/AddProduct";
+import AddSeller from "./sellerAdmin/AddSeller";
 import { firestore, useFirestoreQuery } from "gatsby-theme-firebase";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,12 +52,12 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles();
 
-  const [products, isLoading] = useFirestoreQuery(
-    firestore.collection("products"),
+  const [sellers, isLoading] = useFirestoreQuery(
+    firestore.collection("sellers"),
   );
 
   const createProduct = (name, price) => {
-    firestore.collection("products").add({
+    firestore.collection("sellers").add({
       category: "vagitable",
       price,
       seller: "/sellers/CaJKJ5CX59jTmZ3hMBw5",
@@ -74,7 +72,7 @@ export default () => {
   };
 
   const deleteProduct = (id) => {
-    firestore.collection("products").doc(id).delete();
+    firestore.collection("sellers").doc(id).delete();
   };
 
   return (
@@ -86,7 +84,7 @@ export default () => {
           width: "100%",
         }}
       >
-        <AddProduct
+        <AddSeller
           createProduct={createProduct}
         />
         <div
@@ -97,14 +95,14 @@ export default () => {
             alignItems: "center",
           }}
         >
-          <Typography variant="h5">Product List</Typography>
+          <Typography variant="h5">Seller List</Typography>
           <Paper component="form" className={classes.searchBox}>
             <IconButton className={classes.iconButton} aria-label="menu">
               <FilterListIcon />
             </IconButton>
             <InputBase
               className={classes.input}
-              placeholder="Search Product"
+              placeholder="Search Seller"
               inputProps={{ "aria-label": "search product" }}
             />
             <IconButton
@@ -129,7 +127,7 @@ export default () => {
             >
               <CircularProgress />
             </div>}
-          {products?.map((product) => (
+          {sellers?.map((product) => (
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
@@ -143,7 +141,7 @@ export default () => {
                     className={classes.inline}
                     color="textPrimary"
                   >
-                    {product.category}
+                    helllo
                   </Typography>
                 </React.Fragment>}
               />
