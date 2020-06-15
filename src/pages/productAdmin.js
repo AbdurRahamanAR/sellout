@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   List,
@@ -9,6 +9,8 @@ import {
   ListItemAvatar,
   Avatar,
   Typography,
+  Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import Layout from "../components/Layout";
 import { IconButton } from "@material-ui/core";
@@ -16,10 +18,10 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
-import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import AddProduct from "./productAdmin/AddProduct";
+import { firestore, useFirestoreQuery } from "gatsby-theme-firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +54,29 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles();
 
+  const [products, isLoading] = useFirestoreQuery(
+    firestore.collection("products"),
+  );
+
+  const createProduct = (name, price) => {
+    firestore.collection("products").add({
+      category: "vagitable",
+      price,
+      seller: "/sellers/CaJKJ5CX59jTmZ3hMBw5",
+      name,
+    })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const deleteProduct = (id) => {
+    firestore.collection("products").doc(id).delete();
+  };
+
   return (
     <Layout>
       <div
@@ -61,7 +86,9 @@ export default () => {
           width: "100%",
         }}
       >
-        <AddProduct />
+        <AddProduct
+          createProduct={createProduct}
+        />
         <div
           style={{
             display: "flex",
@@ -90,14 +117,15 @@ export default () => {
           </Paper>
         </div>
         <List className={classes.root}>
-          <ListItem alignItems="flex-start">
-            <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-            </ListItemAvatar>
-            <ListItemText
-              primary="Brunch this weekend?"
-              secondary={
-                <React.Fragment>
+          {isLoading && <CircularProgress />}
+          {products?.map((product) => (
+            <ListItem alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Brunch this weekend?"
+                secondary={<React.Fragment>
                   <Typography
                     component="span"
                     variant="body2"
@@ -106,22 +134,25 @@ export default () => {
                   >
                     Ali Connors
                   </Typography>
-                </React.Fragment>
-              }
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="comments">
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                edge="end"
-                aria-label="comments"
-                style={{ marginLeft: 15, marginRight: 15 }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
+                </React.Fragment>}
+              />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="comments">
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  edge="end"
+                  aria-label="comments"
+                  style={{ marginLeft: 15, marginRight: 15 }}
+                  onClick={() => {
+                    deleteProduct(product._id);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
         </List>
       </div>
     </Layout>

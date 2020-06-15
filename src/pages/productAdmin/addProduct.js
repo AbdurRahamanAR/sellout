@@ -5,12 +5,13 @@ import {
   MenuItem,
   IconButton,
   Card,
+  Button,
 } from "@material-ui/core";
 import Layout from "../../components/Layout";
 import AddIcon from "@material-ui/icons/Add";
 import { DropzoneArea } from "material-ui-dropzone";
 
-export default () => {
+export default ({ createProduct }) => {
   const [currency, setCurrency] = React.useState("EUR");
 
   const currencies = [
@@ -62,7 +63,8 @@ export default () => {
             }}
           >
             <div style={{ flexGrow: "1" }}>
-              <TextField label="Product Name" variant="outlined" fullWidth />{" "}
+              <TextField label="Product Name" variant="outlined" fullWidth />
+              {" "}
               <br />
               <TextField
                 type="number"
@@ -155,9 +157,29 @@ export default () => {
               />
             </div>
           </div>
+          <div style={{ marginTop: 20 }}></div>
+          <DropzoneArea />
+
+          <div
+            style={{
+              marginTop: 15,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              variant="contained"
+              onClick={() => {
+                createProduct("I know", 30);
+              }}
+            >
+              Submit
+            </Button>
+            <Button variant="contained" style={{ marginLeft: 15 }}>
+              Reset
+            </Button>
+          </div>
         </form>
-        <div style={{ marginTop: 20 }}></div>
-        <DropzoneArea />
       </Card>
     </div>
   );
