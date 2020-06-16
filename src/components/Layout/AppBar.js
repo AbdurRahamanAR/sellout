@@ -219,7 +219,11 @@ export default function PrimarySearchAppBar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            <IconButton
+              aria-label="show 4 new mails"
+              color="inherit"
+              onClick={() => navigate("/favorate")}
+            >
               <Badge badgeContent={4} color="secondary">
                 <FavoriteBorderIcon />
               </Badge>
@@ -233,22 +237,20 @@ export default function PrimarySearchAppBar() {
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            {isLoggedIn
-              ? (
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              )
-              : (
-                <Button onClick={() => navigate("/auth")}>LogIn</Button>
-              )}
+            {isLoggedIn ? (
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            ) : (
+              <Button onClick={() => navigate("/auth")}>LogIn</Button>
+            )}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
