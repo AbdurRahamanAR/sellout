@@ -14,9 +14,9 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import { useAuth, auth } from "gatsby-theme-firebase";
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { navigate } from "@reach/router";
 
 const useStyles = makeStyles((theme) => ({
@@ -127,8 +127,15 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          navigate("/profile");
+          setAnchorEl(null);
+          handleMobileMenuClose();
+        }}
+      >
+        Profile
+      </MenuItem>
       <MenuItem onClick={handleLogOut}>Logout</MenuItem>
     </Menu>
   );
@@ -217,25 +224,31 @@ export default function PrimarySearchAppBar() {
                 <FavoriteBorderIcon />
               </Badge>
             </IconButton>
-            <IconButton aria-label="show 4 new mails" color="inherit" style={{marginRight: 20}}>
+            <IconButton
+              aria-label="show 4 new mails"
+              color="inherit"
+              style={{ marginRight: 20 }}
+            >
               <Badge badgeContent={4} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            {isLoggedIn ? (
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            ) : (
-              <Button onClick={() => navigate("/auth")}>LogIn</Button>
-            )}
+            {isLoggedIn
+              ? (
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              )
+              : (
+                <Button onClick={() => navigate("/auth")}>LogIn</Button>
+              )}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
