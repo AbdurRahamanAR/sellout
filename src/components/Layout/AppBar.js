@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { AppBar, Button, Tabs, Tab } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -18,6 +18,8 @@ import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import { useAuth, auth } from "gatsby-theme-firebase";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { navigate } from "@reach/router";
+import { Link } from "gatsby";
+import { TabContext } from "../../contexts";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -90,6 +92,7 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const { isLoading, isLoggedIn, profile } = useAuth();
+  const { selectTab, setSelectTab } = useContext(TabContext);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -196,9 +199,12 @@ export default function PrimarySearchAppBar() {
             color: "#000",
           }}
         >
-          <Typography className={classes.title} variant="h6" noWrap>
-            Sellout
-          </Typography>
+          <Link to="/">
+            <Typography className={classes.title} variant="h6" noWrap>
+              Sellout
+            </Typography>
+          </Link>
+
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -237,20 +243,22 @@ export default function PrimarySearchAppBar() {
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            {isLoggedIn ? (
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            ) : (
-              <Button onClick={() => navigate("/auth")}>LogIn</Button>
-            )}
+            {isLoggedIn
+              ? (
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              )
+              : (
+                <Button onClick={() => navigate("/auth")}>LogIn</Button>
+              )}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -287,11 +295,17 @@ export default function PrimarySearchAppBar() {
             <MenuIcon style={{ marginRight: 15 }} />
             Menu
           </Button>
-          <Tabs aria-label="simple tabs example">
-            <Tab label="Home" />
-            <Tab label="Resturents" />
-            <Tab label="Stores" />
-            <Tab label="Other Service" />
+          <Tabs
+            aria-label="simple tabs example"
+            value={selectTab}
+            onChange={(e, v) => {
+              setSelectTab(v);
+            }}
+          >
+            <Tab label="Home" id="main_page_tab-1" />
+            <Tab label="Resturents" id="main_page_tab-2" />
+            <Tab label="Stores" id="main_page_tab-3" />
+            <Tab label="Other Service" id="main_page_tab-4" />
           </Tabs>
         </div>
       </AppBar>
