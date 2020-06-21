@@ -1,7 +1,9 @@
 import React from "react";
 import Layout from "../components/Layout";
-import { Typography, IconButton } from "@material-ui/core";
+import { Typography, IconButton, Button } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import { useAuth } from "gatsby-theme-firebase";
+import { navigate } from "@reach/router";
 
 const secondaryInfo = {
   color: "#727c8e",
@@ -18,6 +20,16 @@ const shippingAddress = {
 };
 
 export default () => {
+  const { isLoading, isLoggedIn, profile } = useAuth();
+
+  if (isLoading) {
+    return "Loading...";
+  }
+
+  if (!isLoggedIn) {
+    navigate("/auth");
+  }
+
   return (
     <Layout>
       <div
@@ -42,10 +54,15 @@ export default () => {
               overflow: "hidden",
             }}
           >
-            <img
-              src="https://scontent.fcgp8-1.fna.fbcdn.net/v/t1.0-9/64635254_431754904070977_8294663686413352960_o.jpg?_nc_cat=109&_nc_sid=09cbfe&_nc_eui2=AeHx6MN392lIxQKmK4SQLNIMJghM3Wcs7tUmCEzdZyzu1WAyo9QBuaXMuftiIR2knEZxDnMqAI7zAz-6OSJhcLdc&_nc_ohc=corHYOG5dkoAX8WWAOA&_nc_ht=scontent.fcgp8-1.fna&oh=706d234ffc1c31dab8bd1c7073ea11a1&oe=5F0F8197"
-              alt="profile"
-            />
+            {profile.photoURL
+              ? <img
+                src={profile.photoURL}
+                alt="profile"
+              />
+              : <img
+                src="https://www.pngfind.com/pngs/m/110-1102775_download-empty-profile-hd-png-download.png"
+                alt="profile"
+              />}
           </div>
           <div>
             <Typography
@@ -55,12 +72,25 @@ export default () => {
                 fontWeight: 700,
               }}
             >
-              Shuoib Hossain Badon
+              {profile.displayName ? profile.displayName : "Sellout Lover"}
             </Typography>
             <Typography style={secondaryInfo}>
-              Email : Shuibe873@email.com
+              Email: {profile.email}
+              {profile.emailVerified
+                ? null
+                : <span style={{ color: "#ccc", fontSize: 12 }}>
+                  &nbsp;(Not varified)
+                </span>}
             </Typography>
-            <Typography style={secondaryInfo}>Number : 01795170026</Typography>
+            <Typography style={secondaryInfo}>
+              Number : {profile.phoneNumber ? profile.phoneNumber : <Button
+                variant="contained"
+                color="secondary"
+                style={{ marginLeft: 5 }}
+              >
+                Please Add +
+              </Button>}
+            </Typography>
           </div>
         </div>
 
